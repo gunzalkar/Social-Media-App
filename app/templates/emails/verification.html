@@ -1,0 +1,12 @@
+<p>Dear {{ user.fname }} {{ user.lname }}</p>
+<p>
+    You have successfully registered on Plux2. To confirm your identity, please 
+    <a href="{{ url_for('users.verify_user', username=user.username, token=token, _external=True) }}">
+        click here
+    </a>.
+</p>
+<p>Alternatively, you can paste the following link in your browser's address bar:</p>
+<p>{{ url_for('users.verify_user', username=user.username, token=token, _external=True) }}</p>
+<p>If you have not registered, or have no idea about the registration, kindly ignore this mail.</p>
+<p>Sincerely,</p>
+<p>The Plux2 Team</p>

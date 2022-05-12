@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="content-section">
+        <h2>Welcome {{ user.fname }} {{ user.lname }}</h2>
+        <p>Looks like your account hasn't been verified yet.
+            Please verify your account by clicking the link sent on your registered Email ID.
+        </p>
+        <br>
+        <p>If not received or link has expired. Click to </p>
+            <form action="" method="post">
+                {{ form.hidden_tag() }}
+                <div class="form-group">
+                    {{ form.submit(class="btn btn-outline-info", value="Resend verification Email") }}
+                </div>
+            </form>
+    </div>
+{% endblock content %}

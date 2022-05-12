@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% for sender in pending_requests %}
+    <article class="media content-section">
+        <div class="media-body">
+        <div class="article-metadata">
+            <a class="mr-2" href="{{ url_for('users.profile', username=sender.username) }}">{{ sender.fname }} {{ sender.lname }} - (@{{ sender.username }})</a>
+            <small class="text-muted">has requested to follow you</small>
+        </div>
+            <img class="rounded-circle article-img" src="{{ url_for('static', filename='img/' + sender.username + '/profile/' + sender.profile_pic) }}">
+            <form style="display: inline;" action="{{ url_for('users.accept_request', username=current_user.username, sender_username=sender.username) }}" method="post">
+                {{ accept_form.hidden_tag() }}
+                {{ accept_form.submit(class="btn btn-outline-success", value="Accept") }}
+            </form>
+            <form style="display: inline;" class="ml-3 mt-4" action="" method="post">
+                {{ reject_form.hidden_tag() }}
+                {{ reject_form.submit(class="btn btn-outline-danger", value="Reject") }}
+            </form>
+        </div>
+    </article>
+{% endfor %}
+{% endblock content %}

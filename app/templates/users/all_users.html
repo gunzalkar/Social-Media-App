@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% for user in all_users %}
+        <article class="media content-section">
+            <div class="media-body">
+            <div class="article-metadata">
+                <a class="mr-2" href="{{ url_for('users.profile', username=user.username) }}">{{ user.fname }} {{ user.lname }} - (@{{ user.username }})</a>
+                <small class="text-muted">{{ moment(user.last_seen).format('LLL') }}</small>
+            </div>
+                {% if user.profile_pic == 'default.jpg' %}
+                    <img class="rounded-circle article-img" src="{{ url_for('static', filename='img/default.jpg') }}">
+                {% else %}
+                    <img class="rounded-circle article-img" src="{{ url_for('static', filename='img/' + user.username + '/profile/' + user.profile_pic) }}">
+                {% endif %}
+            </div>
+        </article>
+    {% endfor %}
+{% endblock content %}

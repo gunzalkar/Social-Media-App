@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="content-section">
+    <div class="media">
+        {% if image_src %}
+        <img class="rounded-circle account-img" src="{{ image_src }}">
+        {% else %}
+        <img class="rounded-circle account-img" src="{{ url_for('static', filename='img/default.jpg') }}">
+        {% endif %}
+        <div class="media-body">
+            <h2 class="account-heading">{{ user.fname }} {{ user.lname }}</h2>
+            <h5>@{{ user.username }}</h5>
+            <p class="text-secondary">{{ user.email }}</p>
+        </div>
+        
+    </div>
+    {% if user.last_seen %}
+          <div>
+            <p>Last seen: {{ moment(user.last_seen).format('LLL') }}</p>
+          </div>
+    {% endif %}
+
+    {% if user != current_user %}
+
+      {% if current_user.request_from(user) %}
+        <p class="text-secondary text-muted">{{ user.username }} has requested to follow you</p>
+        <form method="post" action="{{ url_for('users.accept_request', username=current_user.username, sender_username=user.username) }}">
+          {{ accept_form.hidden_tag() }}
+          {{ accept_form.submit(class="btn btn-outline-success", value="Accept") }}
+        </form>
+        <form method="post" action="">
+          {{ reject_form.hidden_tag() }}
+          {{ reject_form.submit(class="btn btn-outline-danger", value="Reject") }}
+        </form>
+      
+      {% elif current_user.has_requested(user) %}
+        <form method="post" action="{{ url_for('users.cancel_request', username=user.username) }}">
+          {{ cancel_request_form.hidden_tag() }}
+          {{ cancel_request_form.submit(class="btn btn-outline-info", value="Cancel Request") }}
+        </form>
+      {% elif current_user.is_friends_with(user) %}
+        <form method="post" action="">
+          {{ remove_friend_form.hidden_tag() }}
+          {{ remove_friend_form.submit(class="btn btn-outline-info", value="Remove Friend") }}
+        </form>
+      {% else %}
+        <form method="post" action="{{ url_for('users.send_request', username=user.username) }}">
+          {{ send_request_form.hidden_tag() }}
+          {{ send_request_form.submit(class="btn btn-outline-info", value="Send Request") }}
+        </form>
+      {% endif %}
+    {% endif %}
+    <br>
+    <hr>
+    {% if user == current_user %}
+      <p align="right">
+        <a class="btn btn-outline-info" href="{{ url_for('users.view_requests', username=user.username) }}">Requests</a>
+      </p>
+    {% endif %}
+    <hr>
+
+    {% if form %}
+    <form action="" method="post" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+        <fieldset class="form-group">
+            <center><legend class="border-bottom mb-4">Edit Profile</legend></center>
+            <div class="form-group">
+                {{ form.username.label(class="form-control-label") }}
+
+                {% if form.username.errors %}
+                {{ form.username(class="form-control form-control-lg is-invalid") }}
+                <div class="invalid-feedback">
+                    {% for error in form.username.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                {{ form.username(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.email.label(class="form-control-label") }}
+                {% if form.email.errors %}
+                {{ form.email(class="form-control form-control-lg is-invalid") }}
+                <div class="invalid-feedback">
+                    {% for error in form.email.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                {{ form.email(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.profile_pic.label() }}
+                {{ form.profile_pic(class="form-control-file") }}
+                {% if form.profile_pic.errors %}
+                {% for error in form.profile_pic.errors %}
+                <span class="text-danger">{{ error }}</span>
+                {% endfor %}
+                {% endif %}
+            </div>
+        </fieldset>
+        <div class="form-group">
+            {{ form.submit(class="btn btn-outline-info") }}
+        </div>
+    </form>
+    {% endif %}
+</div>
+<br>
+{% endblock content %}

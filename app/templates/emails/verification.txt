@@ -1,0 +1,11 @@
+Dear {{ user.fname }} {{ user.lname }},
+
+You have been successfully registered on Plux2. To confirm your identity please click on the following link:
+
+{{ url_for('users.verify_user', username=user.username, token=token, _external=True) }}
+
+If you have not registered, kindly ignore this email.
+
+Sincerely,
+
+The Plux2 Team

@@ -1,0 +1,75 @@
+<html>
+
+<head>
+    {% if title %}
+    <title>{{ title }} - Page</title>
+    {% else %}
+    <title>Welcome to Plux</title>
+    {% endif %}
+
+    {% block styles %}
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}">
+    {% endblock styles %}
+</head>
+
+<body>
+    <header class="site-header">
+        {% block navbar %}
+        <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
+            <div class="container">
+                <a class="navbar-brand mr-4" href="{{ url_for('main.index') }}">Flask Blog</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle"
+                    aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarToggle">
+                    <div class="navbar-nav mr-auto">
+                        <a class="nav-item nav-link" href="{{ url_for('main.index') }}">Home</a>
+                        <a class="nav-item nav-link" href="#">About</a>
+                    </div>
+                    <!-- Navbar Right Side -->
+                    <div class="navbar-nav">
+                        {% if current_user.is_authenticated %}
+                            <a class="nav-item nav-link" href="{{ url_for('users.all_users') }}">All Users</a>
+                            <a class="nav-item nav-link" href="{{ url_for('users.profile', username=current_user.username) }}">Profile</a>
+                            <a class="nav-item nav-link" href="{{ url_for('users.logout') }}">Logout</a>
+                        {% else %}
+                            <a class="nav-item nav-link" href="{{ url_for('users.login') }}">Login</a>
+                            <a class="nav-item nav-link" href="{{ url_for('users.register') }}">Register</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </nav>
+        {% endblock navbar %}
+    </header>
+    <main role="main" class="container">
+        <div class="row">
+            <div class="col-md-8">
+                {% with messages = get_flashed_messages(with_categories=True) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
+                {% block content %}{% endblock %}
+            </div>
+        </div>
+    </main>
+    {% block scripts %}
+        <link href="{{ url_for('static', filename='js/bootstrap.min.js') }}">
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+        integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+        crossorigin="anonymous"></script>
+        {{ moment.include_moment() }}
+    {% endblock scripts %}
+</body>
+</html>
